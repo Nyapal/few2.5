@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head> 
+    <title>
+      Titanic Visualization 
+    </title>
+  </head>
+  <body>
+    <h1> Titanic Visualizations </h1>
+    <div id="container"></div>
+    <script>
+      fetch('titanic-passengers.json')
+      .then(res => res.json())
+      .then(json => handleData(json))
+      .catch(err => console.log(err.message))
+
+      function countFields(data, field, value) {
+        return data.reduce((acc, passenger) => {
+          if (passenger.fields[field] === value) {
+            return acc += 1
+          }
+          return acc 
+        }, 0)
+      }
+
+      function handleData(data) {
+        // Male & Female Count
+        const womenCount = countFields(data, 'sex', 'female')
+        const menCount = countFields(data, 'sex', 'male')
+
+        // Passenger All Classes
+        const allClasses = data.reduce((acc, passenger) => {
+          if (acc.indexOf(passenger.fields.pclass) === -1) {
+            return [...acc, acc.push(passenger.fields.pclass)]
+          }
+          return acc
+        }, [])
+
+        // Make a list of all passengers who survived
+        const survivors_list = data.reduce((acc, passenger) => {
+          if(passenger.fields.survived === 'Yes') {
+            acc.push(passenger.fields.name)
+          }
+          return acc
+        }, [])
+        
+        // Make a list of all passengers who did not survive
+        const deceased_list = data.reduce((acc, passenger) => {
+          if(passenger.fields.survived === 'No') {
+            acc.push(passenger.fields.name)
+          }
+          return acc
+        }, [])
+
+        // Find all of the female passengers that survived
+        const female_survivors = data.reduce((acc, passenger) => {
+          if(passenger.fields.sex === 'female' && passenger.fields.survived === 'Yes') {
+            acc.push(passenger.fields.name)
+          }
+          return acc
+        }, [])
+
+        // Find all of the female passengers who did not survive
+        const deceased_female = data.reduce((acc, passenger) => {
+          if(passenger.fields.sex === 'female' && passenger.fields.survived === 'No') {
+            acc.push(passenger.fields.name)
+          }
+          return acc
+        }, [])
+
+        // Find all of the male passengers who survived
+        // Find all of the male passengers who did not survive
+        // Make a list of all passenger classes
+        // Make a list of women and men in each class
+
+        // Find the passenger Ticket Classes
+        const ticketClasses = data.reduce((acc, passenger) => {
+          if(acc.indexOf(passenger.fields.ticket) === -1) {
+            return [...acc, acc.push(passenger.fields.ticket)]
+          }
+          return acc
+        }, [])
+
+
+        // Find the numbers of siblings/spouses
+        // const numSib = data.reduce((acc, passenger) => {
+        //   if(acc.indexOf(passenger.fields[sibsp]) > 0) {
+        //     console.log
+        //     return acc += 1 //[...acc, acc.push(passenger.fields.sibsp)]
+        //   }
+        //   return acc
+        // }, 0)
+        // console.log(`Number of siblings/spouses: ${numSib}`)
+
+        //************************************************
+        // Find the number of different fares paid
+
+        //************************************************
+        // Find all of the cabin numbers
+
+        //************************************************
+        // Challenges
+        //************************************************
+
+        // Number of passengers 
+        // console.log(`Number of passengers: ${data.length}`)
+        
+        // Gender Count
+        // console.log(`Number of female passengers: ${womenCount}`)
+        // console.log(`Number of male passengers: ${menCount}`)
+        
+        // Count all Values of a field 
+        // console.log(`Number of all passenger classes: ${allClasses}`)
+        console.log(`Number of siblings/spouses: `)
+        console.log(`Number of different fares paidList of cabins: `)
+        
+        // Survivors List
+        // console.log(`Survivors List: ${survivors_list}`)
+        
+        // Deceased List
+        // console.log(`Deceased List: ${deceased_list}`)
+
+        // List all of the female passengers that survived
+        // console.log(female_survivors)
+
+        // Find all of the female passengers who did not survive
+        console.log(deceased_female)
+        
+        // Find all of the male passengers who survived
+        // Find all of the male passengers who did not survive
+        // Make a list of all passenger classes
+        // Make a list of women and men in each class
+
+        // Agregate data 
+        console.log(`Total of all fares: `)
+
+        // Filter for male or female passengers 
+        // Find a min & max 
+        // Find an average 
+
+        
+
+      }
+
+
+
+
+    
+    </script>
+    
+  </body>
+
+</html>
