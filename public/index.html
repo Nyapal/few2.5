@@ -1,47 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head> <title> Titanic Visualization </title> </head>
-  <body style="text-align:center">
+  <body>
     <h1> Titanic Visualizations </h1>
-    <div>
-      <button> Passenger Count </button>
-    </div>
+    
     <div id="container">
     </div>
     <script>
-
-      let data
-
       fetch('titanic-passengers.json')
       .then(res => res.json())
       .then(json => {
         handleData(json)
-        // draw survivors 
-        // draw fares
-        // draw genders 
       })
       .catch(err => console.log(err.message))
 
       // creates graph
-      function makeGraph (data, colors, width = 600, height = 400) {
+      function makeGraph (data, filter, colors, width = 900, height = 400) {
         const container = document.createElement('div')
         container.style.width = `${width}px`
         container.style.height = `${height}px`
-        container.style.border = '1px solid'
-
-        const max = Math.max(...data) // Find Max
-        const dataNormalized = data.map(value => value/max) // normalize
-        const step = width / data.length
         
-
+        const step = width / data.length * 2
+        
         container.style.position = 'relative'
 
         for (let i = 0; i < data.length; i++) {
           const el = document.createElement('div')
           container.appendChild(el)
           el.style.position = 'absolute'
-          el.style.backgroundColor = colors[i % colors.length]
-          el.style.height = `${dataNormalized[i] * 400}px`
+          if (data[i].sex === filter) {
+            el.style.backgroundColor = colors[0]
+          } else {
+            el.style.backgroundColor = colors[1]
+          }
+          el.style.height = `${data[i].fare}px`
           el.style.width = `${step}px`
           el.style.left = `${step * i}px`
           el.style.bottom = '0'
@@ -50,81 +42,13 @@
       }
 
       function handleData(data) {
-        const 
+        const betterData = data.map(passengers => passengers.fields)
 
+        const allFares = betterData.map(fields => fields.fare).filter((fare) => {return fare !== undefined})
 
-        // const betterData = data.map(passenger => passenger.fields)
-        // ******************************************************
-        // All passengets
-        passengerCount = data.length
-
-        // All males 
-        maleCount = data.reduce((acc, passenger) => {
-          if(passenger.fields.sex === 'male') {
-            return acc += 1
-          }
-          return acc
-        }, 0)
-
-        // All women
-        femaleCount = data.reduce((acc, passenger) => {
-          if(passenger.fields.sex === 'female') {
-            return acc += 1
-          }
-          return acc
-        }, 0)
-
-        // ******************************************************
-        // List of all passengers who survived
-        const survivors = data.reduce((acc, passenger) => {
-          if(passenger.fields.survived === 'Yes') {
-            return acc += 1
-          }
-          return acc
-        }, 0)
-        
-        // List of all passengers who did not survive
-        const deceased = data.reduce((acc, passenger) => {
-          if(passenger.fields.survived === 'No') {
-            return acc += 1
-          }
-          return acc
-        }, 0)
-
-        // ******************************************************
-
-        // List of all of the female passengers that survived
-        const female_survivors = data.reduce((acc, passenger) => {
-          if(passenger.fields.sex === 'female' && passenger.fields.survived === 'Yes') {
-            acc.push(passenger.fields.name)
-          }
-          return acc
-        }, [])
-
-        // List of all of the female passengers who did not survive
-        const deceased_female = data.reduce((acc, passenger) => {
-          if(passenger.fields.sex === 'female' && passenger.fields.survived === 'No') {
-            acc.push(passenger.fields.name)
-          }
-          return acc
-        }, [])
-        
-        const passengers = makeGraph([maleCount, femaleCount, passengerCount], ['blue', 'pink', 'green'])
-        document.querySelector('body').appendChild(passengers)
-
-        const survivorsCount = makeGraph([survivors, deceased], ['green', 'red'])
-        document.querySelector('body').appendChild(survivorsCount)
-
-        const allFares = data.map((passenger) => {
-          return passenger.fields.fare
-        }).filter((fare) => {
-          return fare !== undefined 
-        })
-
-        const allPassengersGraph = makeGraph(allFares, ['blue', 'pink', 'green'], 900, 400)
-        document.querySelector('body').appendChild(allPassengersGraph)
-    } // handleDate
-      
+        const allPassengersFaresGraph = makeGraph(betterData, 'female', ['pink', '#3366ff'])
+        document.querySelector('body').appendChild(allPassengersFaresGraph)
+      }
     </script>
   </body>
 </html>
