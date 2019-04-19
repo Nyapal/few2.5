@@ -43,33 +43,42 @@
       // ----------------------------------
       // Handles data 
       function handleData(data) {
+        // Takes data & returns necessary info only: fields
         const betterData = data.map(passengers => passengers.fields)
 
+        // Takes data and returns passengers {value, color}
         const fareAndGender = betterData.map(passenger => {
           const value = passenger.fare
           const color = passenger.sex === 'male' ? '#3366ff' : 'pink'
           return { value, color } 
         })
 
-        // const passengersByAgeAndClass = betterData.map(passenger => {
-        //   // Assignments 1
-        //   // value is age
-        //   // color is set by pclass (Must use Switch!)
-        //   return { value, color } 
-        // })
+        const ageAndClass = betterData.map(passenger => {
+          const value = passenger.age
+          let color;
+          switch (passenger.pclass) {
+            case 3:
+              color = '#FFD700'
+              break;
+            case 2:
+              color = '#C0C0C0'
+              break;
+            case 1:
+              color = '#CD7f32'
+              break;
+          }
+          return { value, color } 
+        })
 
         // Assignment 2 make up your own
 
         // Asignment Stretch challenge make up another 
 
-        // const allPassengersFaresGraph = makeGraph(betterData, 'female', ['pink', '#3366ff'])
         const faresAndGenderGraph = makeGraph(fareAndGender)
         document.querySelector('body').appendChild(faresAndGenderGraph)
 
-        // const passengersWithColors = makeGraph
-
-        // const passengersAgeAndClassGraph = makeGraph(passengersByAgeAndClass)
-        // document.querySelector('body').appendChild(passengersAgeAndClassGraph)
+        const ageAndClassGraph = makeGraph(ageAndClass)
+        document.querySelector('body').appendChild(ageAndClassGraph)
       }
     </script>
   </body>
