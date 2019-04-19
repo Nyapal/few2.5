@@ -9,7 +9,7 @@
     <!-- <script src=""></script> -->
     <script>
       // ------------------------------------------------
-      // Add some comments 
+      // Fetching data from Titanic Dataset 
       fetch('titanic-passengers.json')
       .then(res => res.json())
       .then(json => {
@@ -18,41 +18,12 @@
       .catch(err => console.log(err.message))
 
       // -------------------------------------------------
-      // creates graph
-      function makeGraph (data, filter, colors, width = 900, height = 400) {
+      // Create Graph 
+      function makeGraph(data, width = 900, height = 400) {
         const container = document.createElement('div')
         container.style.width = `${width}px`
         container.style.height = `${height}px`
-        
         const step = width / data.length * 2
-        container.style.position = 'relative'
-
-        for (let i = 0; i < data.length; i++) {
-          const el = document.createElement('div')
-          container.appendChild(el)
-          el.style.position = 'absolute'
-          if (data[i].sex === filter) {
-            el.style.backgroundColor = colors[0]
-          } else {
-            el.style.backgroundColor = colors[1]
-          }
-          el.style.height = `${data[i].fare}px`
-          el.style.width = `${step}px`
-          el.style.left = `${step * i}px`
-          el.style.bottom = '0'
-        }
-        return container
-      }
-
-      // -------------------------------------------------
-      // creates graph
-      function makeGraph2(data, width = 900, height = 400) {
-        const container = document.createElement('div')
-        container.style.width = `${width}px`
-        container.style.height = `${height}px`
-        
-        const step = width / data.length * 2
-        //!!
         container.style.position = 'relative'
 
         data.forEach((item, i) => {
@@ -73,32 +44,32 @@
       // Handles data 
       function handleData(data) {
         const betterData = data.map(passengers => passengers.fields)
-        // const allFares = betterData.map(fields => fields.fare).filter((fare) => {return fare !== undefined})
-        // { fieldName: color, otherField: otherColor }
-        // { men: 'blue', female: 'pink' }
-        const passengersWithColors = betterData.map(passenger => {
+
+        const fareAndGender = betterData.map(passenger => {
           const value = passenger.fare
           const color = passenger.sex === 'male' ? '#3366ff' : 'pink'
           return { value, color } 
         })
 
-        const passengersByAgeAndClass = betterData.map(passenger => {
-          // Assignments 1
-          // value is age
-          // color is set by pclass (Must use Switch!)
-          return { value, color } 
-        })
+        // const passengersByAgeAndClass = betterData.map(passenger => {
+        //   // Assignments 1
+        //   // value is age
+        //   // color is set by pclass (Must use Switch!)
+        //   return { value, color } 
+        // })
 
         // Assignment 2 make up your own
 
         // Asignment Stretch challenge make up another 
 
         // const allPassengersFaresGraph = makeGraph(betterData, 'female', ['pink', '#3366ff'])
-        const allPassengersFaresGraph = makeGraph2(passengersWithColors)
-        document.querySelector('body').appendChild(allPassengersFaresGraph)
+        const faresAndGenderGraph = makeGraph(fareAndGender)
+        document.querySelector('body').appendChild(faresAndGenderGraph)
 
-        const passengersAgeAndClassGraph = makeGraph2(passengersByAgeAndClass)
-        document.querySelector('body').appendChild(passengersAgeAndClassGraph)
+        // const passengersWithColors = makeGraph
+
+        // const passengersAgeAndClassGraph = makeGraph(passengersByAgeAndClass)
+        // document.querySelector('body').appendChild(passengersAgeAndClassGraph)
       }
     </script>
   </body>
