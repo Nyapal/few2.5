@@ -1,58 +1,99 @@
 <!DOCTYPE html>
 <html>
-  <head> 
-    <title>
-      Titanic Visualization 
-    </title>
-  </head>
-  <body>
+  <head> <title> Titanic Visualization </title> </head>
+  <body style="text-align:center">
     <h1> Titanic Visualizations </h1>
-    <div id="container"></div>
+    <div>
+      <button> Passenger Count </button>
+    </div>
+    <div id="container">
+    </div>
     <script>
+
+      let data
+
       fetch('titanic-passengers.json')
       .then(res => res.json())
-      .then(json => handleData(json))
+      .then(json => {
+        handleData(json)
+        // draw survivors 
+        // draw fares
+        // draw genders 
+      })
       .catch(err => console.log(err.message))
 
-      function countFields(data, field, value) {
-        return data.reduce((acc, passenger) => {
-          if (passenger.fields[field] === value) {
-            return acc += 1
-          }
-          return acc 
-        }, 0)
+      // creates graph
+      function makeGraph (data, colors, width = 600, height = 400) {
+        const container = document.createElement('div')
+        container.style.width = `${width}px`
+        container.style.height = `${height}px`
+        container.style.border = '1px solid'
+
+        const max = Math.max(...data) // Find Max
+        const dataNormalized = data.map(value => value/max) // normalize
+        const step = width / data.length
+        
+
+        container.style.position = 'relative'
+
+        for (let i = 0; i < data.length; i++) {
+          const el = document.createElement('div')
+          container.appendChild(el)
+          el.style.position = 'absolute'
+          el.style.backgroundColor = colors[i % colors.length]
+          el.style.height = `${dataNormalized[i] * 400}px`
+          el.style.width = `${step}px`
+          el.style.left = `${step * i}px`
+          el.style.bottom = '0'
+        }
+        return container
       }
 
       function handleData(data) {
-        // Male & Female Count
-        const womenCount = countFields(data, 'sex', 'female')
-        const menCount = countFields(data, 'sex', 'male')
+        const 
 
-        // Passenger All Classes
-        const allClasses = data.reduce((acc, passenger) => {
-          if (acc.indexOf(passenger.fields.pclass) === -1) {
-            return [...acc, acc.push(passenger.fields.pclass)]
+
+        // const betterData = data.map(passenger => passenger.fields)
+        // ******************************************************
+        // All passengets
+        passengerCount = data.length
+
+        // All males 
+        maleCount = data.reduce((acc, passenger) => {
+          if(passenger.fields.sex === 'male') {
+            return acc += 1
           }
           return acc
-        }, [])
+        }, 0)
 
-        // Make a list of all passengers who survived
-        const survivors_list = data.reduce((acc, passenger) => {
+        // All women
+        femaleCount = data.reduce((acc, passenger) => {
+          if(passenger.fields.sex === 'female') {
+            return acc += 1
+          }
+          return acc
+        }, 0)
+
+        // ******************************************************
+        // List of all passengers who survived
+        const survivors = data.reduce((acc, passenger) => {
           if(passenger.fields.survived === 'Yes') {
-            acc.push(passenger.fields.name)
+            return acc += 1
           }
           return acc
-        }, [])
+        }, 0)
         
-        // Make a list of all passengers who did not survive
-        const deceased_list = data.reduce((acc, passenger) => {
+        // List of all passengers who did not survive
+        const deceased = data.reduce((acc, passenger) => {
           if(passenger.fields.survived === 'No') {
-            acc.push(passenger.fields.name)
+            return acc += 1
           }
           return acc
-        }, [])
+        }, 0)
 
-        // Find all of the female passengers that survived
+        // ******************************************************
+
+        // List of all of the female passengers that survived
         const female_survivors = data.reduce((acc, passenger) => {
           if(passenger.fields.sex === 'female' && passenger.fields.survived === 'Yes') {
             acc.push(passenger.fields.name)
@@ -60,94 +101,30 @@
           return acc
         }, [])
 
-        // Find all of the female passengers who did not survive
+        // List of all of the female passengers who did not survive
         const deceased_female = data.reduce((acc, passenger) => {
           if(passenger.fields.sex === 'female' && passenger.fields.survived === 'No') {
             acc.push(passenger.fields.name)
           }
           return acc
         }, [])
-
-        // Find all of the male passengers who survived
-        // Find all of the male passengers who did not survive
-        // Make a list of all passenger classes
-        // Make a list of women and men in each class
-
-        // Find the passenger Ticket Classes
-        const ticketClasses = data.reduce((acc, passenger) => {
-          if(acc.indexOf(passenger.fields.ticket) === -1) {
-            return [...acc, acc.push(passenger.fields.ticket)]
-          }
-          return acc
-        }, [])
-
-
-        // Find the numbers of siblings/spouses
-        // const numSib = data.reduce((acc, passenger) => {
-        //   if(acc.indexOf(passenger.fields[sibsp]) > 0) {
-        //     console.log
-        //     return acc += 1 //[...acc, acc.push(passenger.fields.sibsp)]
-        //   }
-        //   return acc
-        // }, 0)
-        // console.log(`Number of siblings/spouses: ${numSib}`)
-
-        //************************************************
-        // Find the number of different fares paid
-
-        //************************************************
-        // Find all of the cabin numbers
-
-        //************************************************
-        // Challenges
-        //************************************************
-
-        // Number of passengers 
-        // console.log(`Number of passengers: ${data.length}`)
         
-        // Gender Count
-        // console.log(`Number of female passengers: ${womenCount}`)
-        // console.log(`Number of male passengers: ${menCount}`)
-        
-        // Count all Values of a field 
-        // console.log(`Number of all passenger classes: ${allClasses}`)
-        console.log(`Number of siblings/spouses: `)
-        console.log(`Number of different fares paidList of cabins: `)
-        
-        // Survivors List
-        // console.log(`Survivors List: ${survivors_list}`)
-        
-        // Deceased List
-        // console.log(`Deceased List: ${deceased_list}`)
+        const passengers = makeGraph([maleCount, femaleCount, passengerCount], ['blue', 'pink', 'green'])
+        document.querySelector('body').appendChild(passengers)
 
-        // List all of the female passengers that survived
-        // console.log(female_survivors)
+        const survivorsCount = makeGraph([survivors, deceased], ['green', 'red'])
+        document.querySelector('body').appendChild(survivorsCount)
 
-        // Find all of the female passengers who did not survive
-        console.log(deceased_female)
-        
-        // Find all of the male passengers who survived
-        // Find all of the male passengers who did not survive
-        // Make a list of all passenger classes
-        // Make a list of women and men in each class
+        const allFares = data.map((passenger) => {
+          return passenger.fields.fare
+        }).filter((fare) => {
+          return fare !== undefined 
+        })
 
-        // Agregate data 
-        console.log(`Total of all fares: `)
-
-        // Filter for male or female passengers 
-        // Find a min & max 
-        // Find an average 
-
-        
-
-      }
-
-
-
-
-    
+        const allPassengersGraph = makeGraph(allFares, ['blue', 'pink', 'green'], 900, 400)
+        document.querySelector('body').appendChild(allPassengersGraph)
+    } // handleDate
+      
     </script>
-    
   </body>
-
 </html>
