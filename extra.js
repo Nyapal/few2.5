@@ -1,6 +1,5 @@
 //this right here is a bunch of extra shit i didnt want to throw away just yet. but need out my face 
 
-
  // const betterData = data.map(passenger => passenger.fields)
         // ******************************************************
         // All passengets
